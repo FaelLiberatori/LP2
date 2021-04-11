@@ -13,18 +13,18 @@ public class Parallelogram extends Figure {
     public void paint (Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
 
-        int[] x = {getPosition()[0], getPosition()[0] + getSize()[0]/2, getPosition()[0]+getSize()[0], getPosition()[0]+getSize()[0]/2};
-        int[] y = {getPosition()[1], getPosition()[1], getPosition()[1]+getSize()[1], getPosition()[1]+getSize()[1]};
+        int[] xAux = {x, x + w/2, x + w, x + w/2};
+        int[] yAux = {y, y, y + h , y + h};
 
-        g2d.rotate(Math.toRadians(getAngle()), (x[1] + x[2])/2,(y[0] + y[1])/2);
+        g2d.rotate(Math.toRadians(angle), (xAux[1] + xAux[2])/2,(yAux[0] + yAux[1])/2);
 
-        g2d.setColor(getBackgroundColor());
-        g2d.fillPolygon(x, y, 4);
+        g2d.setColor(backgroundColor);
+        g2d.fillPolygon(xAux, yAux, 4);
         
-        g2d.setColor(getBorderColor());
-        g2d.setStroke(new BasicStroke(getBorderSize()));
+        g2d.setColor(borderColor);
+        g2d.setStroke(new BasicStroke(borderSize));
         
-        g2d.drawPolygon(x, y, 4);
+        g2d.drawPolygon(xAux, yAux, 4);
         g2d.dispose();
     }
 }

@@ -3,9 +3,9 @@ package figures;
 import java.awt.*;
 
 public class Parallelogram {
-    private int[] XPoints, YPoints;
-    private float borderSize, angle;
-    private Color backgroundColor, borderColor;
+    public int[] XPoints, YPoints;
+    public float borderSize, angle;
+    public Color backgroundColor, borderColor;
 
     public Parallelogram (int[] XPoints, int[] YPoints, float borderSize, float angle, Color backgroundColor, Color borderColor) {
         this.XPoints = XPoints;
@@ -14,46 +14,6 @@ public class Parallelogram {
         this.angle = angle;
         this.backgroundColor = backgroundColor;
         this.borderColor = borderColor;
-    }
-
-    public void setPositionX (int[] XPoints) {
-        this.XPoints = XPoints;
-    }
-
-    public int[] getPositionX () {
-        return XPoints;
-    }
-
-    public void setPositionY (int[] XPoints) {
-        this.YPoints = YPoints;
-    }
-
-    public int[] getPositionY () {
-        return YPoints;
-    }
-
-    public void setBorderSize(float borderSize) {
-        this.borderSize = borderSize;
-    }
-
-    public float getBorderSize () {
-        return borderSize;
-    }
-
-    public void setAngle (float angle) {
-        this.angle = angle;
-    }
-
-    public float getAngle () {
-        return angle;
-    }
-
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-
-    public Color getBackgroundColor () {
-        return backgroundColor;
     }
 
     public void paint (Graphics g) {

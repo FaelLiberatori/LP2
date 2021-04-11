@@ -12,15 +12,15 @@ public class Ellipse extends Figure {
     @Override
     public void paint (Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
-        g2d.rotate(Math.toRadians(getAngle()), getPosition()[0] + getSize()[0]/2, getPosition()[1] + getSize()[1]/2);
+        g2d.rotate(Math.toRadians(angle), x + w, y + y/2);
 
-        g2d.setColor(getBackgroundColor());
-        g2d.fill(new Ellipse2D.Float(getPosition()[0],getPosition()[1], getSize()[0],getSize()[1]));
+        g2d.setColor(backgroundColor);
+        g2d.fill(new Ellipse2D.Float(x, y, w, h));
         
-        g2d.setColor(getBorderColor());
-        g2d.setStroke(new BasicStroke(getBorderSize()));
+        g2d.setColor(borderColor);
+        g2d.setStroke(new BasicStroke(borderSize));
         
-        g2d.draw(new Ellipse2D.Float(getPosition()[0],getPosition()[1], getSize()[0],getSize()[1]));
+        g2d.draw(new Ellipse2D.Float(x, y, w, h));
         g2d.dispose();
     }
 }

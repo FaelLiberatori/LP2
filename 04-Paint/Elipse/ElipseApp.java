@@ -11,7 +11,7 @@ class ElipseApp {
     }
 }
 
-public class ElipseAppFrame extends JFrame {
+class ElipseAppFrame extends JFrame {
     Ellipse e1, e2, e3, e4;
 
     ElipseAppFrame () {
@@ -39,7 +39,7 @@ public class ElipseAppFrame extends JFrame {
     }
 }
 
-public class Rect {
+class Rect {
     private int x, y;
     private int w, h;
     private float borderSize, angle;
@@ -54,50 +54,6 @@ public class Rect {
         this.angle = angle;
         this.backgroundColor = backgroundColor;
         this.borderColor = borderColor;
-    }
-
-    public void setPosition (int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public int[] getPosition () {
-        int[] pos = {x, y};
-        return pos;
-    }
-
-    public void setSize (int w, int h) {
-        this.w = w;
-        this.h = h;
-    }
-
-    public int[] getSize () {
-        int[] size = {w, h};
-        return size;
-    }
-
-    public void setBorderSize(float borderSize) {
-        this.borderSize = borderSize;
-    }
-
-    public float getBorderSize () {
-        return borderSize;
-    }
-
-    public void setAngle (float angle) {
-        this.angle = angle;
-    }
-
-    public float getAngle () {
-        return angle;
-    }
-
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-
-    public Color getBackgroundColor () {
-        return backgroundColor;
     }
 
     public void paint (Graphics g) {
@@ -115,7 +71,7 @@ public class Rect {
     }
 }
 
-public class Ellipse {
+class Ellipse {
     private int x, y;
     private int w, h;
     private float borderSize, angle;
@@ -131,51 +87,7 @@ public class Ellipse {
         this.backgroundColor = backgroundColor;
         this.borderColor = borderColor;
     }
-
-    public void setPosition (int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public int[] getPosition () {
-        int[] pos = {x, y};
-        return pos;
-    }
-
-    public void setSize (int w, int h) {
-        this.w = w;
-        this.h = h;
-    }
-
-    public int[] getSize () {
-        int[] size = {w, h};
-        return size;
-    }
-
-    public void setBorderSize(float borderSize) {
-        this.borderSize = borderSize;
-    }
-
-    public float getBorderSize () {
-        return borderSize;
-    }
-
-    public void setAngle (float angle) {
-        this.angle = angle;
-    }
-
-    public float getAngle () {
-        return angle;
-    }
-
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-
-    public Color getBackgroundColor () {
-        return backgroundColor;
-    }
-
+    
     public void paint (Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.rotate(Math.toRadians(angle), this.x + this.w/2, this.y + this.h/2);
