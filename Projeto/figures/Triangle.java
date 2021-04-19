@@ -9,7 +9,7 @@ public class Triangle extends Figure {
     }
 
     @Override
-    public void paint (Graphics g) {
+    public void painter (Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
 
         int[] xAux = {x, x + w/2, x + w};

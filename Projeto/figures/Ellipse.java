@@ -10,7 +10,7 @@ public class Ellipse extends Figure {
     }
 
     @Override
-    public void paint (Graphics g) {
+    public void painter (Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.rotate(Math.toRadians(angle), x + w, y + y/2);
 

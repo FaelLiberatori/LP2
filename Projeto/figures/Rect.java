@@ -9,7 +9,7 @@ public class Rect extends Figure {
     }
 
     @Override
-    public void paint (Graphics g) {
+    public void painter (Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.rotate(Math.toRadians(angle), x + w/2, y + h/2);
 

@@ -17,7 +17,6 @@ class ListFrame extends JFrame {
     ArrayList<Figure> figList = new ArrayList<Figure>();
     Random rand = new Random();
     Figure activeFigure = null;
-    Figure select = null;
     int mousePositionX = -100, mousePositionY = -100;
 
     ListFrame () {
@@ -31,9 +30,16 @@ class ListFrame extends JFrame {
 
         this.addMouseMotionListener (
             new MouseMotionAdapter() {
-                public void mouseMoved(MouseEvent evt) {
+                public void mouseMoved (MouseEvent evt) {
                     mousePositionX = evt.getX();
                     mousePositionY = evt.getY();
+                }
+
+                public void mouseDragged (MouseEvent evt) {
+                    if (activeFigure != null) {
+                        activeFigure.drag(evt.getX(), evt.getY());
+                        repaint();
+                    }
                 }
             }
         );
@@ -41,13 +47,10 @@ class ListFrame extends JFrame {
         this.addMouseListener(
             new MouseAdapter() {
                 public void mousePressed(MouseEvent evt) {
-                    if (activeFigure != null && select != null) {
-                        figList.remove(select);
-                        select = null;
-                        repaint();
+                    if (activeFigure != null) {
+                        activeFigure.isSelected = false;
+                        activeFigure = null;
                     }
-                    
-                    activeFigure = null;
 
                     for (Figure fig: figList) {
                         if (fig.isOnPoint(mousePositionX, mousePositionY))
@@ -57,10 +60,10 @@ class ListFrame extends JFrame {
                     if (activeFigure != null) {
                         figList.add(figList.remove(figList.indexOf(activeFigure)));
                         activeFigure = figList.get(figList.size() -1);
-                        figList.add(new Select(activeFigure));
-                        select = figList.get(figList.size() -1);
-                        repaint();
+                        activeFigure.isSelected = true;
                     }
+                    
+                    repaint();
                 }
             }
         );
@@ -78,19 +81,19 @@ class ListFrame extends JFrame {
                     int key = evt.getKeyCode();
 
                     if (key == evt.VK_R) {
-                        figList.add(new Rect(x, y, w, h, b, a, Color.white, Color.black));
+                        figList.add(new Rect(x, y, w, h, b, a, Color.yellow, Color.black));
                         repaint();
                     }
                     if (key == evt.VK_E) {
-                        figList.add(new Ellipse(x, y, w, h, b, a, Color.white, Color.black));
+                        figList.add(new Ellipse(x, y, w, h, b, a, Color.yellow, Color.black));
                         repaint();
                     }
                     if (key == evt.VK_T) {
-                        figList.add(new Triangle(x, y, w, h, b, a, Color.white, Color.black));
+                        figList.add(new Triangle(x, y, w, h, b, a, Color.yellow, Color.black));
                         repaint();
                     }
                     if (key == evt.VK_Y) {
-                        figList.add(new Parallelogram(x, y, w, h, b, a, Color.white, Color.black));
+                        figList.add(new Parallelogram(x, y, w, h, b, a, Color.yellow, Color.black));
                         repaint();
                     }
                     if (key == evt.VK_DELETE) {
@@ -110,8 +113,9 @@ class ListFrame extends JFrame {
     }
 
     public void paint (Graphics g) {
-        Rect background = new Rect(0, 0, getWidth(), getHeight(), 0, 0, Color.white, Color.white);
-        background.paint(g);
+        super.paint(g);
+        g.setColor(Color.white);
+        g.fillRect(0, 0, getWidth(), getHeight());
 
         for (Figure fig: figList) {
             fig.paint(g);
