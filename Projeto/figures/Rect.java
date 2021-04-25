@@ -2,7 +2,7 @@ package figures;
 
 import java.awt.*;
 
-public class Rect extends Figure {
+public class Rect extends Figure2D {
 
     public Rect (int x, int y, int w, int h, int borderSize, int angle, Color backgroundColor, Color borderColor) {
         super(x, y, w, h, borderSize, angle, backgroundColor, borderColor);

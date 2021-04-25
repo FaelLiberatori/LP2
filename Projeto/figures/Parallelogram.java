@@ -2,9 +2,8 @@ package figures;
 
 import java.awt.*;
 
-public class Parallelogram extends Figure {
+public class Parallelogram extends Figure2D {
 
-    // Somente faz triângulos equiláteros.
     public Parallelogram (int x, int y, int w, int h, int borderSize, int angle, Color backgroundColor, Color borderColor) {
         super(x, y, w, h, borderSize, angle, backgroundColor, borderColor);
     }
@@ -16,7 +15,7 @@ public class Parallelogram extends Figure {
         int[] xAux = {x, x + w/2, x + w, x + w/2};
         int[] yAux = {y, y, y + h , y + h};
 
-        g2d.rotate(Math.toRadians(angle), (xAux[1] + xAux[2])/2,(yAux[0] + yAux[1])/2);
+        g2d.rotate(Math.toRadians(angle), x + w/2, y + h/2);
 
         g2d.setColor(backgroundColor);
         g2d.fillPolygon(xAux, yAux, 4);
