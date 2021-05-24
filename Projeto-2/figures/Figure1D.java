@@ -4,7 +4,8 @@ import java.awt.*;
 
 public abstract class Figure1D extends Figure {
 
-    public int stroke, length;
+    protected int stroke, length;
+    private boolean negativeDragResize;
 
     public Figure1D (int x, int y, int length, int stroke, int angle, Color backgroundColor) {
         super(x, y, angle, backgroundColor);
@@ -12,9 +13,75 @@ public abstract class Figure1D extends Figure {
         this.length = length;
     }
 
+
+    public int getStroke() {
+        return stroke;
+    }
+
+    public void setStroke(int stroke) {
+        if (stroke >= 1 && stroke <= 14)
+            this.stroke = stroke;
+        else
+            System.out.println("Erro: não é possível diminuir/aumentar o contorno além deste ponto.");
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        if (length >= 3)
+            this.length = length;
+        else
+            System.out.println("Erro: não é possível diminuir o comprimento além deste ponto.");
+    }
+
     @Override
     public boolean clicked (int x, int y) {
-        return x >= this.x && x <= this.x + length && y >= this.y - stroke && y <= this.y + stroke;
+        if (dragStatus == 1)
+            return true;
+        else if (dragStatus == 0)
+            return x >= this.x && x <= this.x + length && y >= this.y - stroke && y <= this.y + stroke;
+        else
+            return false;
+    }
+
+    @Override
+    public boolean borderClicked (int x, int y) {
+        if (dragStatus == 2)
+            return true;
+        else if (dragStatus == 0)
+            return (x >= this.x - focusDistance && x < this.x || x <= this.x + this.length + focusDistance && x > this.x) &&
+            (y >= this.y - focusDistance && y < this.y || y <= this.y + focusDistance && y > this.y);
+        else
+            return false;
+    }
+
+    @Override
+    public void dragResize (int posX, int posY) {
+        if (lastPosX != -100) {
+            int lenghtIncrease = posX - lastPosX;
+
+            if (!negativeDragResize && posX >= x)
+                setLength(length + lenghtIncrease);
+            else if (length + lenghtIncrease >= 3) {
+                x += lenghtIncrease;
+                setLength(length + (-lenghtIncrease));
+                negativeDragResize = true;
+            }
+            else
+                posX = lastPosX;
+        }
+
+        lastPosX = posX;
+        lastPosY = posY;
+        dragStatus = 2;
+    }
+
+    @Override
+    public void released () {
+        super.released();
+        this.negativeDragResize = false;
     }
 
     @Override

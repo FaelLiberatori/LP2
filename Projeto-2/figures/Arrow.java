@@ -12,6 +12,17 @@ public class Arrow extends Figure1D {
     }
 
     @Override
+    public boolean borderClicked (int x, int y) {
+        if (dragStatus == 2)
+            return true;
+        else if (dragStatus == 0)
+            return (x >= this.x - focusDistance && x < this.x || x <= this.x + this.length + focusDistance + arrowPointSize && x > this.x) &&
+            (y >= this.y - focusDistance && y < this.y || y <= this.y + focusDistance && y > this.y);
+        else
+            return false;
+    }
+
+    @Override
     protected void paintFocus (Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
         float dash[] = {4.0f};

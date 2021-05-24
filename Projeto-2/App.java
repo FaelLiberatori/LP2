@@ -1,11 +1,11 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 import java.io.*;
 
 import figures.*;
+import gui.*;
 
 public class App extends JFrame {
     ArrayList<Figure> figList = new ArrayList<Figure>();
@@ -19,6 +19,7 @@ public class App extends JFrame {
         this.pack();
         this.setVisible(true);
 
+        /*
         try {
             FileInputStream f = new FileInputStream("proj.bin");
             ObjectInputStream o = new ObjectInputStream(f);
@@ -26,7 +27,7 @@ public class App extends JFrame {
             o.close();
         } catch (Exception x) {
             System.out.println("Não foi encontrado nenhum projeto salvo.\nError: proj.bin not found! " + x);
-        }
+        } */
 
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -47,6 +48,7 @@ public class App extends JFrame {
 
     class MainPanel extends JPanel {
         Random rand = new Random();
+        SideMenu sideMenu = new SideMenu(this.getSize().height, 10);
         Figure focusedFigure = null;
         int mousePositionX = -100, mousePositionY = -100;
         int lastClickX = -100,  lastClickY = -100;
@@ -59,6 +61,13 @@ public class App extends JFrame {
             setBackground(Color.WHITE);
             setDoubleBuffered(true);
 
+            sideMenu.addButton(new LineFig(0, 0, 0, 2, 0, Color.yellow));
+            sideMenu.addButton(new Arrow(0, 0, 0, 2, 0, Color.yellow));
+            sideMenu.addButton(new Rect(0, 0, 0, 0, 2, 0, Color.yellow, Color.black));
+            sideMenu.addButton(new Ellipse(0, 0, 0, 0, 2, 0, Color.yellow, Color.black));
+            sideMenu.addButton(new Parallelogram(0, 0, 0, 0, 2, 0, Color.yellow, Color.black));
+            sideMenu.addButton(new Triangle(0, 0, 0, 0, 2, 0, Color.yellow, Color.black));
+
             this.addMouseMotionListener (
                 new MouseMotionAdapter() {
                     public void mouseMoved (MouseEvent evt) {
@@ -68,7 +77,11 @@ public class App extends JFrame {
     
                     public void mouseDragged (MouseEvent evt) {
                         if (focusedFigure != null) {
-                            focusedFigure.dragMove(evt.getX(), evt.getY());
+                            if (focusedFigure.clicked(evt.getX(), evt.getY()))
+                                focusedFigure.dragMove(evt.getX(), evt.getY());
+                            else
+                                focusedFigure.dragResize(evt.getX(), evt.getY());
+
                             repaint();
                         }
                     }
@@ -80,11 +93,15 @@ public class App extends JFrame {
                     public void mousePressed (MouseEvent evt) {
                         lastClickX = evt.getX();
                         lastClickY = evt.getY();
+                        Figure lastFocus = focusedFigure;
                         focusedFigure = null;
     
                         for (Figure fig: figList) {
-                            if (fig.clicked(mousePositionX, mousePositionY))
+                            if (fig.clicked(mousePositionX, mousePositionY) ||
+                            (fig == lastFocus && fig.borderClicked(mousePositionX, mousePositionY))) {
                                 focusedFigure = fig;
+                                break;
+                            }
                         }
     
                         if (focusedFigure != null) {
@@ -110,34 +127,26 @@ public class App extends JFrame {
                         if (focusedFigure != null) {
                             if ((evt.getModifiersEx() & evt.CTRL_DOWN_MASK) != 0) {
                                 if (focusedFigure instanceof Figure2D) {
-                                    if (((Figure2D) focusedFigure).borderSize + scroll >= 0
-                                    && ((Figure2D) focusedFigure).borderSize + scroll <= 14)
-                                        ((Figure2D) focusedFigure).borderSize += scroll;
+                                    ((Figure2D) focusedFigure).setBorderSize(((Figure2D) focusedFigure).getBorderSize() + scroll);
                                 }
                                 else {
-                                    if (((Figure1D) focusedFigure).stroke + scroll >= 1
-                                    && ((Figure1D) focusedFigure).stroke + scroll <= 14)
-                                        ((Figure1D) focusedFigure).stroke += scroll;
+                                    ((Figure1D) focusedFigure).setStroke(((Figure1D) focusedFigure).getStroke() + scroll);
                                 }
 
                             }
                             else {
                                 if (focusedFigure instanceof Figure2D) {
-                                    if (((Figure2D) focusedFigure).w + scroll > 4
-                                    && ((Figure2D) focusedFigure).h + scroll > 4) {
-                                        if ((evt.getModifiersEx() & evt.SHIFT_DOWN_MASK) != 0)
-                                            ((Figure2D) focusedFigure).h += scroll;
-                                        else if ((evt.getModifiersEx() & evt.ALT_DOWN_MASK) != 0)
-                                            ((Figure2D) focusedFigure).w += scroll;
-                                        else {
-                                            ((Figure2D) focusedFigure).w += scroll;
-                                            ((Figure2D) focusedFigure).h += scroll;
-                                        }
+                                    if ((evt.getModifiersEx() & evt.SHIFT_DOWN_MASK) != 0)
+                                        ((Figure2D) focusedFigure).setH(((Figure2D) focusedFigure).getH() + scroll);
+                                    else if ((evt.getModifiersEx() & evt.ALT_DOWN_MASK) != 0)
+                                        ((Figure2D) focusedFigure).setW(((Figure2D) focusedFigure).getW() + scroll);
+                                    else {
+                                        ((Figure2D) focusedFigure).setH(((Figure2D) focusedFigure).getH() + scroll);
+                                        ((Figure2D) focusedFigure).setW(((Figure2D) focusedFigure).getW() + scroll);
                                     }
                                 }
                                 else {
-                                    if (((Figure1D) focusedFigure).length + scroll > 4)
-                                        ((Figure1D) focusedFigure).length += scroll;
+                                    ((Figure1D) focusedFigure).setLength(((Figure1D) focusedFigure).getLength() + scroll);
                                 }
                             }
 
@@ -215,6 +224,8 @@ public class App extends JFrame {
             for (Figure fig: figList) {
                 fig.paint(g, fig == focusedFigure);
             }
+
+            sideMenu.paint(g, false);
         }
     }
 
