@@ -1,44 +1,67 @@
-public abstract class A {
-    public abstract void Ação1 () {}
-    public abstract void Ação2 () {}    
+public abstract class Atleta {
+    public abstract void agir () {}
+    public abstract void parar () {}    
 }
 
-public class B extends A {
+public class Corredor extends Atleta {
 
-    public B {}
+    public Corredor {}
 
-    public void Ação1 () {
-        // Uma implementação para a ação 1.
+    public void agir () {
+        // Uma implementação para a ação agir.
     }
-    public void Ação2 () {
-        // Uma implementação para a ação 2.
+    public void parar () {
+        // Uma implementação para a ação parar.
     }    
 }
 
-public class C extends A {
+public class Nadador extends Atleta {
 
-    public C {}
+    public Nadador {}
 
-    public void Ação1 () {
-        // Outra implementação diferente para a ação 1.
+    public void agir () {
+        // Outra implementação diferente para a ação agir.
     }
-    public void Ação2 () {
-        // Outra implementação diferente para a ação 2.
+    public void parar () {
+        // Outra implementação diferente para a ação parar.
     }    
 }
 
-public class D extends B, C {
-    public D {}
+public class Ciclista extends Atleta {
+
+    public Ciclista {}
+
+    public void agir () {
+        // Outra implementação diferente para a ação agir.
+    }
+    public void parar () {
+        // Outra implementação diferente para a ação parar.
+    }    
+}
+
+public class Triatleta extends Corredor, Nadador, Ciclista {
+    // Aqui temos um atleta que disputa a provas de triatlo, por tanto, ele é, ao mesmo tempo, um corredor, nadador e um ciclista.
+
+    public Triatleta {}
 
     // Neste caso, o programador não está interessado em fazer um override e sim em herdar a implementação dos métodos.
 }
 
-public class Main {
+public class Triatlo {
     public static void main(String[] args) {
-        C c = new C();
+        Triatleta triatleta = new Triatleta();
 
-        c.Ação1();
-        c.Ação2();
+        // Prova de corria
+        triatleta.agir();
+        triatleta.parar();
+
+        // Prova de natação
+        triatleta.agir();
+        triatleta.parar();
+
+        // Prova de ciclismo
+        triatleta.agir();
+        triatleta.parar();
 
         // O que aconteceria nesse cenário? Nós estamos chamando um método com duas implementações diferentes, ambas herdadas.
         // Aqui, temos um exemplo do problema do diamante.
