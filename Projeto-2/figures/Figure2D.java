@@ -1,13 +1,14 @@
 package figures;
 
 import java.awt.*;
+import java.awt.geom.*;
 
 public abstract class Figure2D extends Figure {
 
     public Color borderColor;
     protected int w, h;
     protected int borderSize;
-    private boolean negativeDragResizeX, negativeDragResizeY;
+    private boolean negativeDragResizeX, negativeDragResizeY, positiveDragResizeX, positiveDragResizeY;
 
 
     public Figure2D (int x, int y, int w, int h, int borderSize, int angle, Color backgroundColor, Color borderColor) {
@@ -53,11 +54,14 @@ public abstract class Figure2D extends Figure {
             System.out.println("Erro: não é possível diminuir/aumentar a borda além deste ponto.");
     }
 
+    
     @Override
     public boolean clicked (int x, int y) {
+        Ellipse2D circle = new Ellipse2D.Float(this.x,this.y,w,h);
         if (dragStatus == 1)
             return true;
         else if (dragStatus == 0)
+            //return bodyClicked(x, y);
             return x >= this.x && x <= this.x + w && y >= this.y && y <= this.y + h;
         else
             return false;
@@ -68,38 +72,46 @@ public abstract class Figure2D extends Figure {
         if (dragStatus == 2)
             return true;
         else if (dragStatus == 0)
-            return (x >= this.x - focusDistance && x < this.x || x <= this.x + this.w + focusDistance && x > this.x) &&
-            (y >= this.y - focusDistance && y < this.y || y <= this.y + this.h + focusDistance && y > this.y);
+            return !clicked(x, y) && x >= this.x - focusDistance && x <= this.x + this.w + focusDistance*2 &&
+            y >= this.y - focusDistance && y <= this.y + this.h + focusDistance*2;
         else
             return false;
     }
 
     @Override
     public void dragResize (int posX, int posY) {
-        if (lastPosX != -100 && lastPosY != -100) {
-            int wIncrease = posX - lastPosX;
-            int hIncrease = posY - lastPosY;
-
-            if (!negativeDragResizeX && posX >= x)
-                setW(w + wIncrease);
-            else if (w + wIncrease >= 12) {
-                x += wIncrease;
-                setW(w + (-wIncrease));
-                negativeDragResizeX = true;
-            }
-            else
-                posX = lastPosX;
-
-            if (!negativeDragResizeY && posY >= y)
-                setH(h + hIncrease);
-            else if (h + hIncrease >= 12) {
-                y += hIncrease;
-                setH(h + (-hIncrease));
-                negativeDragResizeY = true;
-            }
-            else
-                posY = lastPosY;
+        if (lastPosX == -100 && lastPosY == -100) {
+            lastPosX = posX;
+            lastPosY = posY;
+            dragStatus = 2;
         }
+
+        int wIncrease = posX - lastPosX;
+        int hIncrease = posY - lastPosY;
+
+        if ((positiveDragResizeX || posX >= x + w) && !negativeDragResizeX) {
+            setW(w + wIncrease);
+            positiveDragResizeX = true;
+        }
+        else if ((negativeDragResizeX || w + (-wIncrease) >= 12) && !positiveDragResizeX) {
+            x += wIncrease;
+            setW(w + (-wIncrease));
+            negativeDragResizeX = true;
+        }
+        else
+            posX = lastPosX;
+
+        if ((positiveDragResizeY || posY >= y + h) && !negativeDragResizeY) {
+            setH(h + hIncrease);
+            positiveDragResizeY = true;
+        }
+        else if ((negativeDragResizeY || h + (-hIncrease) >= 12) && !positiveDragResizeY) {
+            y += hIncrease;
+            setH(h + (-hIncrease));
+            negativeDragResizeY = true;
+        }
+        else
+            posY = lastPosY;
 
         lastPosX = posX;
         lastPosY = posY;
@@ -111,10 +123,12 @@ public abstract class Figure2D extends Figure {
         super.released();
         this.negativeDragResizeX = false;
         this.negativeDragResizeY = false;
+        this.positiveDragResizeX = false;
+        this.positiveDragResizeY = false;
     }
 
     @Override
-    protected void paintFocus (Graphics g) {
+    protected void paintFocusRec (Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
         float dash[] = {4.0f};
         g2d.rotate(Math.toRadians(angle), x + w/2, y + h/2);

@@ -5,7 +5,7 @@ import java.awt.*;
 public abstract class Figure1D extends Figure {
 
     protected int stroke, length;
-    private boolean negativeDragResize;
+    private boolean positiveDragResize, negativeDragResize;
 
     public Figure1D (int x, int y, int length, int stroke, int angle, Color backgroundColor) {
         super(x, y, angle, backgroundColor);
@@ -41,7 +41,7 @@ public abstract class Figure1D extends Figure {
         if (dragStatus == 1)
             return true;
         else if (dragStatus == 0)
-            return x >= this.x && x <= this.x + length && y >= this.y - stroke && y <= this.y + stroke;
+            return x >= this.x && x <= this.x + length && y >= this.y - stroke*2 && y <= this.y + stroke*2;
         else
             return false;
     }
@@ -51,27 +51,33 @@ public abstract class Figure1D extends Figure {
         if (dragStatus == 2)
             return true;
         else if (dragStatus == 0)
-            return (x >= this.x - focusDistance && x < this.x || x <= this.x + this.length + focusDistance && x > this.x) &&
-            (y >= this.y - focusDistance && y < this.y || y <= this.y + focusDistance && y > this.y);
+            return (x >= this.x - focusDistance && x < this.x || x <= this.x + this.length + focusDistance*2 && x > this.x) &&
+            (y >= this.y - focusDistance && y < this.y || y <= this.y + focusDistance*2 && y > this.y);
         else
             return false;
     }
 
     @Override
     public void dragResize (int posX, int posY) {
-        if (lastPosX != -100) {
-            int lenghtIncrease = posX - lastPosX;
-
-            if (!negativeDragResize && posX >= x)
-                setLength(length + lenghtIncrease);
-            else if (length + lenghtIncrease >= 3) {
-                x += lenghtIncrease;
-                setLength(length + (-lenghtIncrease));
-                negativeDragResize = true;
-            }
-            else
-                posX = lastPosX;
+        if (lastPosX == -100 && lastPosY == -100) {
+            lastPosX = posX;
+            lastPosY = posY;
+            dragStatus = 2;
         }
+
+        int wIncrease = posX - lastPosX;
+
+        if ((positiveDragResize || posX >= x + length/2) && !negativeDragResize) {
+            setLength(length + wIncrease);
+            positiveDragResize = true;
+        }
+        else if ((negativeDragResize || length + (-wIncrease) >= 12) && !positiveDragResize) {
+            x += wIncrease;
+            setLength(length + (-wIncrease));
+            negativeDragResize = true;
+        }
+        else
+            posX = lastPosX;
 
         lastPosX = posX;
         lastPosY = posY;
@@ -81,11 +87,12 @@ public abstract class Figure1D extends Figure {
     @Override
     public void released () {
         super.released();
+        this.positiveDragResize = false;
         this.negativeDragResize = false;
     }
 
     @Override
-    protected void paintFocus (Graphics g) {
+    protected void paintFocusRec (Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
         float dash[] = {4.0f};
         g2d.rotate(Math.toRadians(angle), x + length/2, y + stroke/2);

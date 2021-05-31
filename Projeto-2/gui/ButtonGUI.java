@@ -80,14 +80,14 @@ public class ButtonGUI implements IVisible { // Já existe uma classe Button no 
         return button.clicked(x, y);
     }
 
-    public void paint (Graphics g, boolean focused) {
-        if (focused)
+    public void paint (Graphics g, int focused) {
+        if (focused >= 1)
             button.backgroundColor = Color.darkGray;
         else
             button.backgroundColor = Color.lightGray;
 
-        button.paint(g, false);
-        figure.paint(g, false);
+        button.paint(g, 0);
+        figure.paint(g, 0);
     }
 
     private void updateButton () {
@@ -95,16 +95,19 @@ public class ButtonGUI implements IVisible { // Já existe uma classe Button no 
         button.y = y;
         button.setW(w);
         button.setH(h);
-
         figure.x = x + padding;
-        figure.y = y + padding;
         
         if (figure instanceof Figure2D) {
+            figure.y = y + padding;
             ((Figure2D) figure).setH(h - padding*2);
             ((Figure2D) figure).setW(w - padding*2);
         }
         else {
-            ((Figure1D) figure).setLength(h - padding*2);
+            figure.y = y + padding + h/4;
+            if (figure instanceof Arrow)
+                ((Figure1D) figure).setLength(h - padding*2 - ((Arrow) figure).arrowPointSize);
+            else
+                ((Figure1D) figure).setLength(h - padding*2);
         }
     }
 }
