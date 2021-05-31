@@ -32,6 +32,12 @@ Segundo projeto de LP2.
 - **Alt + Roda do Mouse** - Aumentar/Diminuir largura da figura.
 - **DELETE** - Excluir figura.
 
+## Funcionalidades
+- Criar, excluir, movimentar, redimensionar, rotacionar e modificar cores de figuras.
+- Salvar projeto em um arquivo binário ao sair do programa.
+- Salvar projeto em um arquivo vetorial SVG ao sair do programa. Podendo, inclusive, ser editados em programas externos, como o Inkscape.
+- Carregar automaticamente o último projeto em aberto ao iniciar o programa (arquivo binário).
+
 ## Como Executar
 O programa depende da biblioteca JFreeSVG para gerar os arquivos SVG, assim sendo, é necessário adicionar o arquivo org.jfree.svg.jar ao compilar e executar o programa. 
 Uma forma de fazer isso é alterando o classpath, por exemplo, para compilar:
