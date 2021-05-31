@@ -11,11 +11,10 @@ public abstract class Figure implements IVisible, Serializable {
     public int angle;
     public Color backgroundColor;
     protected int lastPosX, lastPosY;
-    protected int dragStatus; // 0 = nome, 1 = move, 2 = resize
+    protected int dragStatus; // 0 = none, 1 = move, 2 = resize
     protected static int focusDistance;
 
     protected abstract void painter (Graphics g);
-    //protected abstract void paintFocus (Graphics g);
     protected abstract void paintFocusRec (Graphics g);
     public abstract boolean borderClicked (int x, int y);
     public abstract void dragResize (int posX, int posY);
